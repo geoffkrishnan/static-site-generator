@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
 
 
 class TestTextNode(unittest.TestCase):
@@ -25,8 +25,8 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(node, node2)
 
     def test_text_type_plain(self):
-        node = TextNode("Plain text", TextType.PLAIN)
-        self.assertEqual(node.text_type, TextType.PLAIN)
+        node = TextNode("Plain text", TextType.TEXT)
+        self.assertEqual(node.text_type, TextType.TEXT)
         self.assertEqual(node.text_type.value, "text")
 
     def test_text_type_bold(self):
@@ -49,10 +49,10 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(node.text_type, TextType.LINK)
         self.assertEqual(node.text_type.value, "link")
 
-    def test_text_type_images(self):
-        node = TextNode("Alt text", TextType.IMAGES, "https://example.com/image.png")
-        self.assertEqual(node.text_type, TextType.IMAGES)
-        self.assertEqual(node.text_type.value, "images")
+    def test_text_type_image(self):
+        node = TextNode("Alt text", TextType.IMAGE, "https://example.com/image.png")
+        self.assertEqual(node.text_type, TextType.IMAGE)
+        self.assertEqual(node.text_type.value, "image")
 
     # Test __repr__() method
     def test_repr_with_url(self):
@@ -66,7 +66,7 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(repr(node), "TextNode(Bold text, bold, None)")
 
     def test_repr_plain_text(self):
-        node = TextNode("Plain text", TextType.PLAIN)
+        node = TextNode("Plain text", TextType.TEXT)
         self.assertEqual(repr(node), "TextNode(Plain text, text, None)")
 
     def test_repr_with_none_url(self):
@@ -75,7 +75,7 @@ class TestTextNode(unittest.TestCase):
 
     # Edge case tests
     def test_empty_text(self):
-        node = TextNode("", TextType.PLAIN)
+        node = TextNode("", TextType.TEXT)
         self.assertEqual(node.text, "")
 
     def test_empty_url(self):
@@ -84,12 +84,12 @@ class TestTextNode(unittest.TestCase):
 
     def test_long_text(self):
         long_text = "a" * 1000
-        node = TextNode(long_text, TextType.PLAIN)
+        node = TextNode(long_text, TextType.TEXT)
         self.assertEqual(node.text, long_text)
 
     def test_special_chars_in_text(self):
         text = "Special chars: <>&\"'"
-        node = TextNode(text, TextType.PLAIN)
+        node = TextNode(text, TextType.TEXT)
         self.assertEqual(node.text, text)
 
     def test_newlines_in_text(self):
@@ -99,7 +99,7 @@ class TestTextNode(unittest.TestCase):
 
     def test_unicode_text(self):
         text = "Hello 世界 🌍"
-        node = TextNode(text, TextType.PLAIN)
+        node = TextNode(text, TextType.TEXT)
         self.assertEqual(node.text, text)
 
     def test_url_with_query_params(self):
@@ -145,21 +145,63 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode(code, TextType.CODE)
         self.assertEqual(node1, node2)
 
-    # Test different text types are not equal
+    # Test different text types are not equal, even with same text
     def test_all_text_types_different(self):
         text = "Same text"
         nodes = [
-            TextNode(text, TextType.PLAIN),
+            TextNode(text, TextType.TEXT),
             TextNode(text, TextType.BOLD),
             TextNode(text, TextType.ITALIC),
             TextNode(text, TextType.CODE),
-            TextNode(text, TextType.LINK),
-            TextNode(text, TextType.IMAGES),
+            TextNode(text, TextType.LINK, "http://example.com"),
+            TextNode(text, TextType.IMAGE, "http://example.com/img.png"),
         ]
-        for i, node1 in enumerate(nodes):
-            for j, node2 in enumerate(nodes):
-                if i != j:
-                    self.assertNotEqual(node1, node2)
+        for i in range(len(nodes)):
+            for j in range(i + 1, len(nodes)):
+                self.assertNotEqual(nodes[i], nodes[j])
+
+    def test_text(self):
+        node = TextNode("texty node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "texty node")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_bold(self):
+        node = TextNode("bold text", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "bold text")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_italic(self):
+        node = TextNode("italic text", TextType.ITALIC)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "i")
+        self.assertEqual(html_node.value, "italic text")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_code(self):
+        node = TextNode("print('hello')", TextType.CODE)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "code")
+        self.assertEqual(html_node.value, "print('hello')")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_empty_text(self):
+        node = TextNode("", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.value, "")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_link_with_special_chars(self):
+        node = TextNode(
+            "Link", TextType.LINK, "https://example.com/path?query=1&blah=blah"
+        )
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(
+            html_node.props["href"], "https://example.com/path?query=1&blah=blah"
+        )
 
 
 if __name__ == "__main__":

@@ -76,7 +76,7 @@ class TestHTMLNode(unittest.TestCase):
 
     def test_props_to_html_single_prop(self):
         node = HTMLNode(tag="a", props={"href": "https://www.google.com"})
-        self.assertEqual(node.props_to_html(), 'href="https://www.google.com"')
+        self.assertEqual(node.props_to_html(), ' href="https://www.google.com"')
 
     def test_props_to_html_multiple_props(self):
         node = HTMLNode(
@@ -97,23 +97,25 @@ class TestHTMLNode(unittest.TestCase):
 
     def test_props_to_html_special_chars(self):
         node = HTMLNode(tag="a", props={"data-value": "test & verify"})
-        self.assertEqual(node.props_to_html(), 'data-value="test & verify"')
+        self.assertEqual(node.props_to_html(), ' data-value="test & verify"')
 
     # Tests for __repr__()
     def test_repr_all_none(self):
         node = HTMLNode()
         self.assertEqual(
-            repr(node), "tag = None, value = None, children=None, props=None"
+            repr(node), "HTMLNode(tag = None, value = None, children=None, props=None)"
         )
 
     def test_repr_with_tag(self):
         node = HTMLNode(tag="p")
-        self.assertEqual(repr(node), "tag = p, value = None, children=None, props=None")
+        self.assertEqual(
+            repr(node), "HTMLNode(tag = p, value = None, children=None, props=None)"
+        )
 
     def test_repr_with_value(self):
         node = HTMLNode(value="Hello")
         self.assertEqual(
-            repr(node), "tag = None, value = Hello, children=None, props=None"
+            repr(node), "HTMLNode(tag = None, value = Hello, children=None, props=None)"
         )
 
     def test_repr_with_children(self):

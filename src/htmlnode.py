@@ -14,7 +14,7 @@ class HTMLNode:
             return ""
         props = []
         for prop_key, prop_value in self.props.items():
-            props.append(f'{prop_key}="{prop_value}"')
+            props.append(f' {prop_key}="{prop_value}"')
         return " ".join(props)
 
     def __eq__(self, other):
@@ -26,7 +26,7 @@ class HTMLNode:
         )
 
     def __repr__(self):
-        return f"tag = {self.tag}, value = {self.value}, children={self.children}, props={self.props}"
+        return f"HTMLNode(tag = {self.tag}, value = {self.value}, children={self.children}, props={self.props})"
 
 
 class LeafNode(HTMLNode):
@@ -40,8 +40,10 @@ class LeafNode(HTMLNode):
         if self.tag is None:
             return f"{self.value}"
 
-        props_html = f" {self.props_to_html()}" if self.props else ""
-        return f"<{self.tag}{props_html}>{self.value}</{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+    def __repr__(self):
+        return f"LeafNode(tag = {self.tag}, value = {self.value}, props={self.props})"
 
 
 class ParentNode(HTMLNode):
@@ -53,9 +55,10 @@ class ParentNode(HTMLNode):
             raise ValueError("Tag missing")
         if self.children is None:
             raise ValueError("children missing")
-        all_nodes = []
+        children = ""
         for node in self.children:
-            all_nodes.append(node.to_html())
-        children = "".join(all_nodes)
-        props_html = f" {self.props_to_html()}" if self.props else ""
-        return f"<{self.tag}{props_html}>{children}</{self.tag}>"
+            children += node.to_html()
+        return f"<{self.tag}{self.props_to_html()}>{children}</{self.tag}>"
+
+    def __repr__(self):
+        return f"ParentNode(tag = {self.tag}, children={self.children}, props={self.props})"
