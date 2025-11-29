@@ -57,5 +57,26 @@ class TestLeafNode(unittest.TestCase):
 
     def test_leaf_to_html_special_chars(self):
         node = LeafNode("p", "Hello & goodbye")
-        # Note: You might NOT be escaping HTML chars yet, which is fine for now
         self.assertEqual(node.to_html(), "<p>Hello & goodbye</p>")
+
+    def test_repr_with_props(self):
+        node = LeafNode("a", "Click me", {"href": "https://google.com"})
+        expected = (
+            "LeafNode(tag = a, value = Click me, props={'href': 'https://google.com'})"
+        )
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_without_props(self):
+        node = LeafNode("p", "Hello world")
+        expected = "LeafNode(tag = p, value = Hello world, props=None)"
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_with_empty_props(self):
+        node = LeafNode("p", "Text", {})
+        expected = "LeafNode(tag = p, value = Text, props={})"
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_none_tag(self):
+        node = LeafNode(None, "Raw text")
+        expected = "LeafNode(tag = None, value = Raw text, props=None)"
+        self.assertEqual(repr(node), expected)

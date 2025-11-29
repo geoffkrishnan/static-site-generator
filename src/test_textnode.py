@@ -57,23 +57,24 @@ class TestTextNode(unittest.TestCase):
     # Test __repr__() method
     def test_repr_with_url(self):
         node = TextNode("Click here", TextType.LINK, "https://www.google.com")
-        self.assertEqual(
-            repr(node), "TextNode(Click here, link, https://www.google.com)"
-        )
+        expected = "TextNode(\ntext=Click here,\nTextType=link, \nURL=https://www.google.com\n)\n"
+        self.assertEqual(repr(node), expected)
 
     def test_repr_without_url(self):
         node = TextNode("Bold text", TextType.BOLD)
-        self.assertEqual(repr(node), "TextNode(Bold text, bold, None)")
+        expected = "TextNode(\ntext=Bold text,\nTextType=bold, \nURL=None\n)\n"
+        self.assertEqual(repr(node), expected)
 
     def test_repr_plain_text(self):
         node = TextNode("Plain text", TextType.TEXT)
-        self.assertEqual(repr(node), "TextNode(Plain text, text, None)")
+        expected = "TextNode(\ntext=Plain text,\nTextType=text, \nURL=None\n)\n"
+        self.assertEqual(repr(node), expected)
 
     def test_repr_with_none_url(self):
         node = TextNode("Text", TextType.ITALIC, None)
-        self.assertEqual(repr(node), "TextNode(Text, italic, None)")
+        expected = "TextNode(\ntext=Text,\nTextType=italic, \nURL=None\n)\n"
+        self.assertEqual(repr(node), expected)
 
-    # Edge case tests
     def test_empty_text(self):
         node = TextNode("", TextType.TEXT)
         self.assertEqual(node.text, "")

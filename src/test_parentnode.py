@@ -93,3 +93,32 @@ class TestParentNode(unittest.TestCase):
             parent.to_html(),
             "<div><p>paragraph</p><span><b>bold text</b></span><i>italic</i></div>",
         )
+
+    def test_repr_basic(self):
+        child = LeafNode("p", "text")
+        node = ParentNode("div", [child])
+        # Note: repr will show the child's repr too
+        expected = f"ParentNode(tag = div, children=[{repr(child)}], props=None)"
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_with_props(self):
+        child = LeafNode("p", "text")
+        node = ParentNode("div", [child], {"class": "container"})
+        expected = f"ParentNode(tag = div, children=[{repr(child)}], props={{'class': 'container'}})"
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_multiple_children(self):
+        child1 = LeafNode("p", "first")
+        child2 = LeafNode("p", "second")
+        node = ParentNode("div", [child1, child2])
+        expected = f"ParentNode(tag = div, children=[{repr(child1)}, {repr(child2)}], props=None)"
+        self.assertEqual(repr(node), expected)
+
+    def test_repr_nested_parent(self):
+        leaf = LeafNode("p", "text")
+        inner_parent = ParentNode("div", [leaf])
+        outer_parent = ParentNode("section", [inner_parent])
+        expected = (
+            f"ParentNode(tag = section, children=[{repr(inner_parent)}], props=None)"
+        )
+        self.assertEqual(repr(outer_parent), expected)
