@@ -1,6 +1,6 @@
 import unittest
 
-from leafnode import LeafNode
+from htmlnode import LeafNode
 
 
 class TestLeafNode(unittest.TestCase):
@@ -57,4 +57,5 @@ class TestLeafNode(unittest.TestCase):
 
     def test_leaf_to_html_special_chars(self):
         node = LeafNode("p", "Hello & goodbye")
+        # Note: You might NOT be escaping HTML chars yet, which is fine for now
         self.assertEqual(node.to_html(), "<p>Hello & goodbye</p>")
