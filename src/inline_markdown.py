@@ -42,8 +42,20 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return new_nodes
 
 
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        text = old_node.text
+        extract_markdown_images(text)
+
+
+def split_nodes_link(old_nodes):
+    pass
+
+
 def extract_markdown_images(text):
-    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(pattern, text)
 
 
 def extract_markdown_links(text):
@@ -51,4 +63,5 @@ def extract_markdown_links(text):
     using negative lookbehind to only match link if it isn't preceded with a !
     so images aren't mistaken for links.
     """
-    return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(pattern, text)
