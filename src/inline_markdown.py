@@ -42,20 +42,51 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return new_nodes
 
 
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        text = old_node.text
+        current_pos = 0
+        for match in extract_markdown_links(text):
+            text_before_link = text[current_pos : match.start()]
+            new_text = TextNode(text_before_link, TextType.TEXT)
+            new_nodes.append(new_text)
+
+            alt_text = match.group("alt")
+            url = match.group("url")
+            new_link = TextNode(alt_text, TextType.LINK, url)
+            new_nodes.append(new_link)
+
+            current_pos = match.end()
+        text_after_link = text[current_pos:]
+        new_text = TextNode(text_after_link, TextType.TEXT)
+    return new_nodes
+
+
 def split_nodes_image(old_nodes):
     new_nodes = []
     for old_node in old_nodes:
         text = old_node.text
-        extract_markdown_images(text)
+        current_pos = 0
+        for match in extract_markdown_images(text):
+            text_before_image = text[current_pos : match.start()]
+            new_text = TextNode(text_before_image, TextType.TEXT)
+            new_nodes.append(new_text)
 
+            alt_text = match.group("alt")
+            url = match.group("url")
+            new_img = TextNode(alt_text, TextType.IMAGE, url)
+            new_nodes.append(new_img)
 
-def split_nodes_link(old_nodes):
-    pass
+            current_pos = match.end()
+        text_after_image = text[current_pos:]
+        new_text = TextNode(text_after_image, TextType.TEXT)
+    return new_nodes
 
 
 def extract_markdown_images(text):
-    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.findall(pattern, text)
+    pattern = r"!\[(?P<alt>[^\[\]]*)\]\((?P<url>[^\(\)]*)\)"
+    return re.finditer(pattern, text)
 
 
 def extract_markdown_links(text):
@@ -63,5 +94,18 @@ def extract_markdown_links(text):
     using negative lookbehind to only match link if it isn't preceded with a !
     so images aren't mistaken for links.
     """
-    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.findall(pattern, text)
+    pattern = r"(?<!!)\[(?P<alt>[^\[\]]*)\]\((?P<url>[^\(\)]*)\)"
+    return re.finditer(pattern, text)
+
+
+def main():
+    node = TextNode(
+        "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+        TextType.TEXT,
+    )
+    new_nodes = split_nodes_link([node])
+    print(new_nodes)
+
+
+if __name__ == "__main__":
+    main()
