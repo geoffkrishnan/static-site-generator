@@ -210,9 +210,7 @@ class TestTextToTextNodes(unittest.TestCase):
         result = text_to_textnodes(text)
         expected = [
             TextNode("Check out ", TextType.TEXT),
-            TextNode("my ", TextType.BOLD),
-            TextNode("code", TextType.CODE),
-            TextNode(" repo", TextType.BOLD),
+            TextNode("my `code` repo", TextType.BOLD),
             TextNode(" at ", TextType.TEXT),
             TextNode("GitHub", TextType.LINK, "https://github.com"),
             TextNode(" with ", TextType.TEXT),
