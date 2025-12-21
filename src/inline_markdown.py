@@ -45,6 +45,10 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 def split_nodes_link(old_nodes):
     new_nodes = []
     for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+
         text = old_node.text
         current_pos = 0
         for match in extract_markdown_links(text):
@@ -67,6 +71,10 @@ def split_nodes_link(old_nodes):
 def split_nodes_image(old_nodes):
     new_nodes = []
     for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+
         text = old_node.text
         current_pos = 0
         for match in extract_markdown_images(text):
