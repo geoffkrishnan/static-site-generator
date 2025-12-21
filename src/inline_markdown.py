@@ -60,6 +60,7 @@ def split_nodes_link(old_nodes):
             current_pos = match.end()
         text_after_link = text[current_pos:]
         new_text = TextNode(text_after_link, TextType.TEXT)
+        new_nodes.append(new_nodes)
     return new_nodes
 
 
@@ -81,7 +82,18 @@ def split_nodes_image(old_nodes):
             current_pos = match.end()
         text_after_image = text[current_pos:]
         new_text = TextNode(text_after_image, TextType.TEXT)
+        new_nodes.append(new_nodes)
     return new_nodes
+
+
+def text_to_textnodes(text):
+    text_nodes = [TextNode(text, TextType.TEXT)]
+    text_nodes = split_nodes_image(text_nodes)
+    text_nodes = split_nodes_link(text_nodes)
+    text_nodes = split_nodes_delimiter(text_nodes, "**", TextType.BOLD)
+    text_nodes = split_nodes_delimiter(text_nodes, "*", TextType.ITALIC)
+    text_nodes = split_nodes_delimiter(text_nodes, "`", TextType.CODE)
+    return text_nodes
 
 
 def extract_markdown_images(text):
@@ -99,12 +111,7 @@ def extract_markdown_links(text):
 
 
 def main():
-    node = TextNode(
-        "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-        TextType.TEXT,
-    )
-    new_nodes = split_nodes_link([node])
-    print(new_nodes)
+    pass
 
 
 if __name__ == "__main__":
