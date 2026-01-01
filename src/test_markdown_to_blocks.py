@@ -23,3 +23,27 @@ This is the same paragraph on a new line
                 "- This is a list\n- with items",
             ],
         )
+
+    def test_empty(self):
+        md = ""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [],
+        )
+
+    def test_newlines_only(self):
+        md = "\n\n\n\n\n"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [],
+        )
+
+    def test_excess_newlines(self):
+        md = "text\n\n\n\nmore text"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            ["text", "more text"],
+        )
