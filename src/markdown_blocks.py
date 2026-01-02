@@ -20,16 +20,6 @@ def markdown_to_blocks(markdown):
     ]
 
 
-"""
-return type of blocktype given a block string
-will just do regex to identify
-"""
-
-"""
-
-"""
-
-
 def is_ordered_list(block):
     split_lines = block.split("\n")
     line_number = 1
@@ -49,7 +39,7 @@ def block_to_blocktype(block):
     if re.match(heading_pattern, block):
         return BlockType.HEADING
 
-    code_pattern = r"^```.*```$"
+    code_pattern = r"^```([^`]*)```$"
     if re.match(code_pattern, block):
         return BlockType.CODE
 
