@@ -2,7 +2,7 @@ from markdown_to_html import markdown_to_html_node
 from extract_title import extract_title
 
 
-def generate_page(from_path, dest_path, template_path):
+def generate_page(from_path, dest_path, template_path, base_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     md = from_path.read_text()
@@ -14,17 +14,19 @@ def generate_page(from_path, dest_path, template_path):
 
     page = template.replace("{{ Title }}", title)
     page = page.replace("{{ Content }}", html)
+    page = page.replace('href="/', f'href="{base_path}')
+    page = page.replace('src="/', f'src="{base_path}')
 
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
     dest_path.write_text(page)
 
 
-def generate_pages_recur(content_dir, template_path, dest_dir):
+def generate_pages_recur(content_dir, template_path, dest_dir, base_path):
     for item in content_dir.iterdir():
         if item.is_file() and item.suffix == ".md":
             dest_path = dest_dir / item.with_suffix(".html").name
-            generate_page(item, dest_path, template_path)
+            generate_page(item, dest_path, template_path, base_path)
         elif item.is_dir():
             new_dest_dir = dest_dir / item.name
-            generate_pages_recur(item, template_path, new_dest_dir)
+            generate_pages_recur(item, template_path, new_dest_dir, base_path)
