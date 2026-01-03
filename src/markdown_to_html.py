@@ -76,7 +76,7 @@ def markdown_to_html_node(markdown):
                     raw_text.append(line[2:])
                 elif line.startswith(">"):
                     raw_text.append(line[1:])
-            text = "".join(raw_text)
+            text = " ".join(raw_text)
 
             text_nodes = text_to_textnodes(text)
             child_htmlnodes = [
