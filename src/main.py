@@ -1,15 +1,16 @@
 from copy_static import copy_static
-from generate_page import generate_page
+from generate_page import generate_pages_recur
 from pathlib import Path
 
 
 def main():
     copy_static()
     root = Path(__file__).parent.parent
-    from_path = root / "content" / "index.md"
-    dest_path = root / "public" / "index.html"
+
+    content_dir = root / "content"
+    public_dir = root / "public"
     template_path = root / "template.html"
-    generate_page(from_path, dest_path, template_path)
+    generate_pages_recur(content_dir, template_path, public_dir)
 
 
 if __name__ == "__main__":
