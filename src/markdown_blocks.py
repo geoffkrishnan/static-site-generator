@@ -39,16 +39,24 @@ def block_to_blocktype(block):
     if re.match(heading_pattern, block):
         return BlockType.HEADING
 
-    code_pattern = r"^```([^`]*)```$"
-    if re.match(code_pattern, block):
+    if block == "``````":
         return BlockType.CODE
 
-    quote_pattern = r"^>"
-    if re.match(quote_pattern, block):
+    if (
+        block.startswith("```")
+        and not block.startswith("````")
+        and block.endswith("```")
+        and not block.endswith("````")
+    ):
+        return BlockType.CODE
+
+    lines = block.split("\n")
+    quote_pattern = r"^> "
+    if all(re.match(quote_pattern, line) for line in lines):
         return BlockType.QUOTE
 
     ul_pattern = r"^- "
-    if re.match(ul_pattern, block):
+    if all(re.match(ul_pattern, block) for line in lines):
         return BlockType.UNORDERED_LIST
 
     if is_ordered_list(block):
