@@ -56,7 +56,7 @@ def block_to_blocktype(block):
         return BlockType.QUOTE
 
     ul_pattern = r"^- "
-    if all(re.match(ul_pattern, block) for line in lines):
+    if all(re.match(ul_pattern, line) for line in lines):
         return BlockType.UNORDERED_LIST
 
     if is_ordered_list(block):
