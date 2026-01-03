@@ -46,7 +46,7 @@ def copy_dir_contents(source, dest):
 def copy_static():
     root = Path(__file__).parent.parent
     static = root / "static"
-    public = root / "public"
+    public = root / "docs"
 
     if public.exists():
         delete_dir_contents(public)
