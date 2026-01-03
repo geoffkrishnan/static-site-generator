@@ -1,6 +1,6 @@
 import unittest
 
-from markdown_blocks import BlockType, block_to_blocktype, is_ordered_list
+from markdown_blocks import BlockType, block_to_blocktype
 
 
 class TestBlockToBlockType(unittest.TestCase):
