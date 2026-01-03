@@ -51,7 +51,7 @@ def block_to_blocktype(block):
         return BlockType.CODE
 
     lines = block.split("\n")
-    quote_pattern = r"^> "
+    quote_pattern = r"^>"
     if all(re.match(quote_pattern, line) for line in lines):
         return BlockType.QUOTE
 
